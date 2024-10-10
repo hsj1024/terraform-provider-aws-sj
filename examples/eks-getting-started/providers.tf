@@ -7,6 +7,8 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
+  access_key = "csv 파일에서 입력하기"  
+  secret_key = "csv 파일에서 key 입력하기"
 }
 
 data "aws_availability_zones" "available" {}

@@ -7,8 +7,8 @@
 #  * EKS Node Group to launch worker nodes
 #
 
-resource "aws_iam_role" "demo-node" {
-  name = "terraform-eks-demo-node"
+resource "aws_iam_role" "rookies_final-node" {
+  name = "terraform-eks-rookies_final-node"
 
   assume_role_policy = <<POLICY
 {
@@ -26,26 +26,26 @@ resource "aws_iam_role" "demo-node" {
 POLICY
 }
 
-resource "aws_iam_role_policy_attachment" "demo-node-AmazonEKSWorkerNodePolicy" {
+resource "aws_iam_role_policy_attachment" "rookies_final-node-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.demo-node.name
+  role       = aws_iam_role.rookies_final-node.name
 }
 
-resource "aws_iam_role_policy_attachment" "demo-node-AmazonEKS_CNI_Policy" {
+resource "aws_iam_role_policy_attachment" "rookies_final-node-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.demo-node.name
+  role       = aws_iam_role.rookies_final-node.name
 }
 
-resource "aws_iam_role_policy_attachment" "demo-node-AmazonEC2ContainerRegistryReadOnly" {
+resource "aws_iam_role_policy_attachment" "rookies_final-node-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.demo-node.name
+  role       = aws_iam_role.rookies_final-node.name
 }
 
-resource "aws_eks_node_group" "demo" {
-  cluster_name    = aws_eks_cluster.demo.name
-  node_group_name = "demo"
-  node_role_arn   = aws_iam_role.demo-node.arn
-  subnet_ids      = aws_subnet.demo[*].id
+resource "aws_eks_node_group" "rookies_final" {
+  cluster_name    = aws_eks_cluster.rookies_final-cluster.name
+  node_group_name = "rookies_final"
+  node_role_arn   = aws_iam_role.rookies_final-node.arn
+  subnet_ids      = aws_subnet.rookies_final[*].id
 
   scaling_config {
     desired_size = 1
@@ -54,8 +54,8 @@ resource "aws_eks_node_group" "demo" {
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.demo-node-AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.demo-node-AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.demo-node-AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.rookies_final-node-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.rookies_final-node-AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.rookies_final-node-AmazonEC2ContainerRegistryReadOnly,
   ]
 }
