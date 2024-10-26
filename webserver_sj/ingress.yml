@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-backend
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: dotblossom.today
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: webserver-service
+                port:
+                  number: 5000
+    - host: dotblossom.today
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: webserver-service
+                port:
+                  number: 5000

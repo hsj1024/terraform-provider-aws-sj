@@ -1,0 +1,61 @@
+replicaCount: 2
+
+image:
+  repository: my-backend-image # 백엔드(Spring) Docker 이미지 경로
+  tag: "latest"
+  pullPolicy: Always
+
+frontend:
+  image:
+    repository: my-frontend-image #  프론트(React) Docker 이미지 경로
+    tag: "latest"
+    pullPolicy: Always
+
+service:
+  backendPort: 8080 # Spring 포트
+  frontendPort: 80 # React 포트
+  kafkaPort: 9092 # Kafka 포트
+
+ingress:
+  enabled: true
+  className: "nginx" # nginx Ingress Controller 사용
+  hosts:
+    - host: "myapp.example.com" # 사용자가 애플리케이션에 접속할 때 사용할 도메인 이름 정의
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            serviceName: frontend
+            servicePort: 80
+        - path: /api
+          pathType: Prefix
+          backend:
+            serviceName: backend
+            servicePort: 8080
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 75
+
+# Kafka 설정 추가 사용시 ?
+kafka:
+  enabled: true
+  replicaCount: 3
+  image:
+    repository: bitnami/kafka
+    tag: "latest"
+  externalAccess:
+    enabled: true
+    service:
+      type: LoadBalancer
+  persistence:
+    enabled: true
+    size: 8Gi
+  zookeeper:
+    enabled: true
+    replicaCount: 3
+    image:
+      repository: bitnami/zookeeper
+      tag: "latest"

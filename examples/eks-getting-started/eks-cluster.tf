@@ -8,8 +8,8 @@
 #  * EKS Cluster
 #
 
-resource "aws_iam_role" "rookies_final-cluster" {
-  name = "terraform-eks-rookies_final-cluster"
+resource "aws_iam_role" "rookies-final-cluster" {
+  name = "terraform-eks-rookies-final-cluster"
 
   assume_role_policy = <<POLICY
 {
@@ -27,20 +27,20 @@ resource "aws_iam_role" "rookies_final-cluster" {
 POLICY
 }
 
-resource "aws_iam_role_policy_attachment" "rookies_final-cluster-AmazonEKSClusterPolicy" {
+resource "aws_iam_role_policy_attachment" "rookies-final-cluster-AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.rookies_final-cluster.name
+  role       = aws_iam_role.rookies-final-cluster.name
 }
 
-resource "aws_iam_role_policy_attachment" "rookies_final-cluster-AmazonEKSVPCResourceController" {
+resource "aws_iam_role_policy_attachment" "rookies-final-cluster-AmazonEKSVPCResourceController" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.rookies_final-cluster.name
+  role       = aws_iam_role.rookies-final-cluster.name
 }
 
-resource "aws_security_group" "rookies_final-cluster" {
-  name        = "terraform-eks-rookies_final-cluster"
+resource "aws_security_group" "rookies-final-cluster" {
+  name        = "terraform-eks-rookies-final-cluster"
   description = "Cluster communication with worker nodes"
-  vpc_id      = aws_vpc.rookies_final.id
+  vpc_id      = aws_vpc.rookies-final.id
 
   egress {
     from_port   = 0
@@ -50,31 +50,34 @@ resource "aws_security_group" "rookies_final-cluster" {
   }
 
   tags = {
-    Name = "rookies_final-eks"
+    Name = "rookies-final-eks"
   }
 }
 
-resource "aws_security_group_rule" "rookies_final-cluster-ingress-workstation-https" {
+resource "aws_security_group_rule" "rookies-final-cluster-ingress-workstation-https" {
   cidr_blocks       = [local.workstation-external-cidr]
   description       = "Allow workstation to communicate with the cluster API Server"
   from_port         = 443
   protocol          = "tcp"
-  security_group_id = aws_security_group.rookies_final-cluster.id
+  security_group_id = aws_security_group.rookies-final-cluster.id
   to_port           = 443
   type              = "ingress"
 }
 
-resource "aws_eks_cluster" "rookies_final-cluster" {
+resource "aws_eks_cluster" "rookies-final-cluster" {
   name     = var.cluster_name
-  role_arn = aws_iam_role.rookies_final-cluster.arn
+  role_arn = aws_iam_role.rookies-final-cluster.arn
 
   vpc_config {
-    security_group_ids = [aws_security_group.rookies_final-cluster.id]
-    subnet_ids         = aws_subnet.rookies_final[*].id
+    security_group_ids = [aws_security_group.rookies-final-cluster.id]
+    # 퍼블릭과 프라이빗 서브넷을 모두 포함하도록 설정
+    subnet_ids = concat(aws_subnet.public_subnet[*].id, aws_subnet.private_subnet[*].id)
   }
+  #subnet_ids         = aws_subnet.rookies-final[*].id
+
 
   depends_on = [
-    aws_iam_role_policy_attachment.rookies_final-cluster-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.rookies_final-cluster-AmazonEKSVPCResourceController,
+    aws_iam_role_policy_attachment.rookies-final-cluster-AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.rookies-final-cluster-AmazonEKSVPCResourceController,
   ]
 }
