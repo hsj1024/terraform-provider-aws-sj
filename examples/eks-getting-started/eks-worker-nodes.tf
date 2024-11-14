@@ -1,5 +1,3 @@
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
 
 #
 # EKS Worker Nodes Resources
@@ -50,8 +48,8 @@ resource "aws_eks_node_group" "rookies-final" {
 
 
   scaling_config {
-    desired_size = 1
-    max_size     = 1
+    desired_size = 3
+    max_size     = 3
     min_size     = 1
   }
 

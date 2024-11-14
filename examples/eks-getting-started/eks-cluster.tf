@@ -1,12 +1,8 @@
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
-
-#
 # EKS Cluster Resources
 #  * IAM Role to allow EKS service to manage other AWS services
 #  * EC2 Security Group to allow networking traffic with EKS cluster
 #  * EKS Cluster
-#
+
 
 resource "aws_iam_role" "rookies-final-cluster" {
   name = "terraform-eks-rookies-final-cluster"
@@ -80,4 +76,6 @@ resource "aws_eks_cluster" "rookies-final-cluster" {
     aws_iam_role_policy_attachment.rookies-final-cluster-AmazonEKSClusterPolicy,
     aws_iam_role_policy_attachment.rookies-final-cluster-AmazonEKSVPCResourceController,
   ]
+
 }
+

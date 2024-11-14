@@ -16,3 +16,11 @@ variable "cluster_name" {
   default = "rookies-final-eks"
   type    = string
 }
+
+variable "domain_name" {
+  description = "The base domain for ExternalDNS configuration"
+  type        = string
+  default     = "shortpingoo.shop"
+}
+
+
